@@ -10,7 +10,7 @@
 
 <style scoped>
   .background-App{
-    background: url("../public/background.png");
+    background: url("/background.png");
     height: 100vh;
     width: 100vw;
     z-index: -2;
