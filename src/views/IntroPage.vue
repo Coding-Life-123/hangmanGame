@@ -3,7 +3,7 @@
 </script>
 
 <template>
-  <div>
+  <div class="main">
     <div class="title">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-controller" viewBox="0 0 16 16">
             <path d="M11.5 6.027a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0m-1.5 1.5a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1m2.5-.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0m-1.5 1.5a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1m-6.5-3h1v1h1v1h-1v1h-1v-1h-1v-1h1z"/>
@@ -11,9 +11,95 @@
         </svg>
         <h1>AHORCADO</h1>
     </div>
+    <p>Adivina la palabra antes de que sea tarde!</p>
+    <img src="/hangman0.png" alt="">
+    <div class="play-now-container">
+      <button class="play-now">¡JUGAR AHORA!</button>
+    </div>
   </div>
 </template>
 
 <style scoped>
+
+@keyframes rotar {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.main{
+  display: flex;
+  flex-direction: column;
+  margin-top: 10vh;
+  align-items: center;
+}
+
+.title{
+  display: flex;
+  flex-direction: row;
+  margin: auto;
+  vertical-align: middle;
+}
+
+.title svg{
+  margin: auto;
+  height: 40px;
+  width: 40px;
+}
+
+.title h1{
+  margin: auto;
+  height: fit-content;
+  margin-left: 20px;
+}
+
+.play-now-container{
+  padding: 5px;
+  position: relative;
+  width: fit-content;
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+.play-now{
+  position: relative;
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: none;
+  font-weight: 700;
+  font-size: 16px;
+  background-color: rgb(50, 50, 50);
+  color: white;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.play-now-container::before{
+  content: "";
+  position: absolute;
+  margin-top: -40px;
+  margin-left: -160px;
+  inset: -4px; /* margen para simular el borde */
+  background: conic-gradient(
+    #C77DFF,
+    #B05CFF,
+    #D44BFF,
+    #FF4BF4,
+    #7F4BFF,
+    #4B68FF,
+    #4BF1FF,
+    #4B68FF,
+    #7F4BFF,
+    #FF4BF4,
+    #D44BFF,
+    #B05CFF,
+    #C77DFF
+  );
+  padding: 3px;
+  z-index: -1;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  animation: rotar 4s linear infinite;
+}
 
 </style>
