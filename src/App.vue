@@ -11,5 +11,12 @@
 <style scoped>
   .background-App{
     background: url("../public/background.png");
+    height: 100vh;
+    width: 100vw;
+    z-index: -2;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    position: absolute;
   }
 </style>

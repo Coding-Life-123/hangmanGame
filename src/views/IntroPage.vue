@@ -27,9 +27,9 @@
 }
 
 .main{
+  margin-top: 10vh;
   display: flex;
   flex-direction: column;
-  margin-top: 10vh;
   align-items: center;
 }
 
