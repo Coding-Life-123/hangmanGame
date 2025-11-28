@@ -25,11 +25,12 @@
 }
 
 .main{
+  margin: auto;
   margin-top: 10vh;
   display: flex;
+  justify-content: center;
   flex-direction: column;
   align-items: center;
-  margin-left: 20vw;
 }
 
 .title{
