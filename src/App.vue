@@ -17,7 +17,7 @@
     width: 100vw;
     z-index: -2;
     background-repeat: no-repeat;
-    background-size: cover;
+    background-size: coñver;
     background-position: center;
     position: absolute;
   }

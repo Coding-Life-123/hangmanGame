@@ -1,6 +1,7 @@
 <script setup>
 import ButtonGradient from '../components/ButtonGradient.vue';
 import CategoryDiv from '../components/CategoryDiv.vue';
+import { ref } from 'vue';
 
 const categories = [
   { icon:"🦁", type: "Animales", color: "#6B4BFF" },
@@ -15,16 +16,23 @@ const categories = [
   { icon:"🎵", type: "Música", color: "#FF4FA7" }
 ];
 
+const categoryVar = ref("");
+
+function cambiarCat(newCat){
+    categoryVar.value = newCat;
+    console.log(categoryVar.value);
+}
+
 </script>
 
 <template>
     <div class="categories-main">
         <h1 class="categories-title">CATEGORÍAS:</h1>
         <div class="categories-list">
-            <CategoryDiv v-for="category in categories" :icon="category.icon" :title="category.type" :bgColor="category.color"  />
+            <CategoryDiv v-for="(category, index) in categories" :icon="category.icon" :title="category.type" :bgColor="category.color" :key="index" @click="cambiarCat(category.type)"/>
         </div>
         <div class="categories-next-button">
-            <router-link to="/hangman"><ButtonGradient :title="'continuar'"/></router-link>
+            <router-link :to="'/hangman/'+categoryVar"><ButtonGradient :title="'Continuar'"/></router-link>
         </div>
     </div>
 </template>

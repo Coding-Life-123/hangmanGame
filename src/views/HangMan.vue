@@ -8,10 +8,17 @@ const letters = [
   "n","ñ","o","p","q","r","s","t","u","v","w","x","y","z"
 ];
 
-word.value = "Manzana";
-const chars = ref([...word.value.toLowerCase()]);
-const display = ref(Array(chars.value.length).fill("_"));
+word.value = "Teología";
+const cleanWord = quitarTildes(word.value);
+console.log(cleanWord);
+const chars = ref([...cleanWord.toLowerCase()]);
+const displayChars = ref([...word.value])
+const display = ref(Array(displayChars.value.length).fill("_"));
 const wrongLetters = ref([]);
+
+function quitarTildes(texto) {
+  return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()
+}
 
 
 function browseChar(letter){
@@ -19,14 +26,18 @@ function browseChar(letter){
     let acierto = false;
 
     chars.value.forEach((char, index)=>{
+        console.log(char);
+        console.log(chars.value[index]);
+        console.log(displayChars.value[indexgit]);
         if(char === letter){
-            display.value[index] = letter;
+
+            display.value[index] = displayChars.value[index];
             acierto = true;
         }
     });
 
-    if(!acierto && !wrongLetters.value.includes(letter)){
-        wrongLetters.value.push(letter);
+    if(!acierto && !wrongLetters.value.includes(i)){
+        wrongLetters.value.push(i);
     }
 }
 
