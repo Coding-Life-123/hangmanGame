@@ -7,7 +7,7 @@ import { createRouter, createWebHashHistory } from "vue-router";
 
 const routes = [
     {path:"/", name:"intro", component:IntroPage},
-    {path:"/hangman/:category", name:"hangman-game", component:HangMan},
+    {path:"/hangman/:category/:level", name:"hangman-game", component:HangMan},
     {path:"/categories/:level", name:"categories", component:Categories},
     {path:"/levels", name:"levels", component:Level},
     /*{path:"/scoreboard", name:"scoreboard", component:ScoreBoard}*/

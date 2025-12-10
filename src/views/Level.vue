@@ -3,7 +3,7 @@ import ButtonGradient from '../components/ButtonGradient.vue';
 import CategoryDiv from '../components/CategoryDiv.vue';
 import { ref } from 'vue';
 
-const newLvlVar = ref("");
+const newLvlVar = ref("facil");
 
 function cambiarLvl(newLvl){
     newLvlVar.value = newLvl;

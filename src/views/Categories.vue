@@ -23,7 +23,7 @@ const level = route.params.level
 
 console.log(level)
 
-const categoryVar = ref("");
+const categoryVar = ref("Animales");
 
 function cambiarCat(newCat){
     categoryVar.value = newCat;
@@ -39,7 +39,7 @@ function cambiarCat(newCat){
             <CategoryDiv v-for="(category, index) in categories" :icon="category.icon" :title="category.type" :bgColor="category.color" :key="index" @click="cambiarCat(category.type)"/>
         </div>
         <div class="categories-next-button">
-            <router-link :to="{name:'hangman-game', params:{category: categoryVar}}"><ButtonGradient :title="'Continuar'"/></router-link>
+            <router-link :to="{name:'hangman-game', params:{category: categoryVar, level}}"><ButtonGradient :title="'Continuar'"/></router-link>
         </div>
     </div>
 </template>

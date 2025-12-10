@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue';
+import { useRoute } from 'vue-router';
 
 const word = ref("");
 
@@ -8,18 +9,50 @@ const letters = [
   "n","ñ","o","p","q","r","s","t","u","v","w","x","y","z"
 ];
 
-word.value = "Teología";
-const cleanWord = quitarTildes(word.value);
-console.log(cleanWord);
-const chars = ref([...cleanWord.toLowerCase()]);
-const displayChars = ref([...word.value])
-const display = ref(Array(displayChars.value.length).fill("_"));
+const route = useRoute();
+
+const {category, level} = route.params
+
+console.log(category, level)
+
+fetch('https://7mcmw0x3-3005.use.devtunnels.ms/api/product/generate',{
+    method: "POST",
+    headers:{
+        "Content-Type":"application/json"
+    },
+    body:JSON.stringify({
+        category: category,
+        difficulty: level        
+    })
+})
+    .then(res => res.json())
+    .then(data => {
+        console.log("respuesta:", data.word)
+        updateWord(data.word.res)
+    })
+    .catch(err => console.error("Error:", err))
+
+function updateWord(response){    
+    const res = response.split("|n");
+    console.log(res[0].trim())
+    word.value = res[0].trim()
+    definirPalabra()
+}
+
+const chars = ref(), displayChars = ref(), display = ref();
 const wrongLetters = ref([]);
+
+function definirPalabra(){
+    const cleanWord = quitarTildes(word.value);
+    console.log(cleanWord);
+    chars.value = [...cleanWord.toLowerCase()];
+    displayChars.value = [...word.value];
+    display.value = Array(displayChars.value.length).fill("_");
+}
 
 function quitarTildes(texto) {
   return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()
 }
-
 
 function browseChar(letter){
 
@@ -28,7 +61,7 @@ function browseChar(letter){
     chars.value.forEach((char, index)=>{
         console.log(char);
         console.log(chars.value[index]);
-        console.log(displayChars.value[indexgit]);
+        console.log(displayChars.value[index]);
         if(char === letter){
 
             display.value[index] = displayChars.value[index];
@@ -36,11 +69,10 @@ function browseChar(letter){
         }
     });
 
-    if(!acierto && !wrongLetters.value.includes(i)){
-        wrongLetters.value.push(i);
+    if(!acierto && !wrongLetters.value.includes(letter)){
+        wrongLetters.value.push(letter);
     }
 }
-
 
 console.log(chars.value, display.value)
 console.log(wrongLetters.value);
@@ -49,6 +81,7 @@ console.log(wrongLetters.value);
 
 <template>
     <div class="hangman-main">
+        
         <div class="hangman-content">
             <img class="hangman-image" :src="'./hangman'+wrongLetters.length+'.png'" alt="">
             <div class="hangman-game">
