@@ -1,4 +1,5 @@
 <script setup>
+import { useRoute } from 'vue-router';
 import ButtonGradient from '../components/ButtonGradient.vue';
 import CategoryDiv from '../components/CategoryDiv.vue';
 import { ref } from 'vue';
@@ -16,6 +17,12 @@ const categories = [
   { icon:"🎵", type: "Música", color: "#FF4FA7" }
 ];
 
+const route = useRoute();
+
+const level = route.params.level
+
+console.log(level)
+
 const categoryVar = ref("");
 
 function cambiarCat(newCat){
@@ -32,7 +39,7 @@ function cambiarCat(newCat){
             <CategoryDiv v-for="(category, index) in categories" :icon="category.icon" :title="category.type" :bgColor="category.color" :key="index" @click="cambiarCat(category.type)"/>
         </div>
         <div class="categories-next-button">
-            <router-link :to="'/hangman/'+categoryVar"><ButtonGradient :title="'Continuar'"/></router-link>
+            <router-link :to="{name:'hangman-game', params:{category: categoryVar}}"><ButtonGradient :title="'Continuar'"/></router-link>
         </div>
     </div>
 </template>

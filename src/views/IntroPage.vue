@@ -14,7 +14,7 @@ import ButtonGradient from '../components/ButtonGradient.vue';
     </div>
     <p class="guess-text">Adivina la palabra antes de que sea tarde!</p>
     <div class="play-now-container">
-      <router-link to="/categories"><ButtonGradient :class="'play-now'" :title="'PLAY NOW!'" /> </router-link>
+      <router-link to="/levels"><ButtonGradient :class="'play-now'" :title="'PLAY NOW!'" /> </router-link>
     </div>
   </div>
 </template>

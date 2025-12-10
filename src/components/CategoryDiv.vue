@@ -27,6 +27,7 @@ console.log(props.icon, props.title, props.bgColor)
         display: flex;
         justify-content: center;
         transition: scale ease 0.7s;
+        margin: auto;
     }
 
     .category-div:hover{
@@ -46,7 +47,8 @@ console.log(props.icon, props.title, props.bgColor)
 
     .category-div span{
         margin: auto;
-        width: 18px;
+        height: 18px;
+        display: flex;
     }
 
     .category-div h1{
