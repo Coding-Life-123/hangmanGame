@@ -60,7 +60,7 @@ function startGame(){
 }
 
 
-//startGame()
+startGame()
 
 function updateWord(response){    
     const res = response.split("|n");
@@ -81,7 +81,7 @@ watch(gameStatus, (nuevo)=>{
         }, 10000);
     }
 })
-updateWord("putos |n hola")
+//updateWord("putos |n hola")
 
 function definirPalabra(){
     const cleanWord = quitarTildes(word.value);
