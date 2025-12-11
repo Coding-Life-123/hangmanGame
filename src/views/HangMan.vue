@@ -6,7 +6,7 @@ const word = ref("");
 
 const letters = [
   "a","b","c","d","e","f","g","h","i","j","k","l","m",
-  "n","ñ","o","p","q","r","s","t","u","v","w","x","y","z"
+  "n","ñ","o","p","q","r","s","t","u","v","w","x","y","z","-"
 ];
 
 const route = useRoute();
@@ -15,22 +15,27 @@ const {category, level} = route.params
 
 console.log(category, level)
 
-fetch('https://7mcmw0x3-3005.use.devtunnels.ms/api/product/generate',{
-    method: "POST",
-    headers:{
-        "Content-Type":"application/json"
-    },
-    body:JSON.stringify({
-        category: category,
-        difficulty: level        
+
+function startGame(){        
+    fetch('https://2ngrw7kq-3005.use2.devtunnels.ms/api/product/generate',{
+        method: "POST",
+        headers:{
+            "Content-Type":"application/json"
+        },
+        body:JSON.stringify({
+            category: category,
+            difficulty: level        
+        })
     })
-})
-    .then(res => res.json())
-    .then(data => {
-        console.log("respuesta:", data.word)
-        updateWord(data.word.res)
-    })
-    .catch(err => console.error("Error:", err))
+        .then(res => res.json())
+        .then(data => {
+            console.log("respuesta:", data.word)
+            updateWord(data.word.res)
+        })
+        .catch(err => console.error("Error:", err))
+}
+
+startGame()
 
 function updateWord(response){    
     const res = response.split("|n");
