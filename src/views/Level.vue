@@ -16,12 +16,15 @@ function cambiarLvl(newLvl){
     <div class="level-main">
         <h1 class="level-title">DIFICULTAD:</h1>
         <div class="level-list">
-            <CategoryDiv :icon="'🔥'" :title="'Fácil'" :bgColor="'#2f2'" @click="cambiarLvl('facil')"/>
-            <CategoryDiv :icon="'🔥🔥'" :title="'Media'" :bgColor="'#efef29'" @click="cambiarLvl('medio')"/>
-            <CategoryDiv :icon="'🔥🔥🔥'" :title="'Difícil'" :bgColor="'#f22'" @click="cambiarLvl('dificil')"/>
-        </div>
-        <div class="level-next-button">
-        <router-link :to="{name: 'categories', params:{level: newLvlVar}}"><ButtonGradient :title="'Continuar'"/></router-link>
+            <router-link :to="{name: 'categories', params:{level: newLvlVar}}">
+                <CategoryDiv :icon="'🔥'" :title="'Fácil'" :bgColor="'#2f2'" @click="cambiarLvl('facil')"/>
+            </router-link>
+            <router-link :to="{name: 'categories', params:{level: newLvlVar}}">
+                <CategoryDiv :icon="'🔥🔥'" :title="'Media'" :bgColor="'#efef29'" @click="cambiarLvl('medio')"/>
+            </router-link>
+            <router-link :to="{name: 'categories', params:{level: newLvlVar}}">
+                <CategoryDiv :icon="'🔥🔥🔥'" :title="'Difícil'" :bgColor="'#f22'" @click="cambiarLvl('dificil')"/>
+            </router-link>
         </div>
     </div>    
 </template>

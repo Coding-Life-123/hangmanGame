@@ -36,11 +36,9 @@ function cambiarCat(newCat){
     <div class="categories-main">
         <h1 class="categories-title">CATEGORÍAS:</h1>
         <div class="categories-list">
-            <CategoryDiv v-for="(category, index) in categories" :icon="category.icon" :title="category.type" :bgColor="category.color" :key="index" @click="cambiarCat(category.type)"/>
+            <router-link :to="{name:'hangman-game', params:{category: categoryVar, level}}" v-for="(category, index) in categories"><CategoryDiv  :icon="category.icon" :title="category.type" :bgColor="category.color" :key="index" @click="cambiarCat(category.type)"/></router-link>
         </div>
-        <div class="categories-next-button">
-            <router-link :to="{name:'hangman-game', params:{category: categoryVar, level}}"><ButtonGradient :title="'Continuar'"/></router-link>
-        </div>
+
     </div>
 </template>
 
@@ -68,6 +66,13 @@ function cambiarCat(newCat){
         margin: auto;
         row-gap: 40px;
         column-gap: 20px;
+    }
+
+    .categories-list router-link{
+        display: flex;
+        justify-content: center;
+        transition: scale ease 0.7s;
+        margin: auto;
     }
 
     .categories-next-button{

@@ -1,6 +1,6 @@
 <script setup>
-import { ref } from 'vue';
-import { useRoute } from 'vue-router';
+import { ref, watch } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import Loading from '../components/Loading.vue';
 
 const word = ref("");
@@ -11,6 +11,7 @@ const letters = [
 ];
 
 const route = useRoute();
+const router = useRouter();
 
 const {category, level} = route.params
 
@@ -59,7 +60,7 @@ function startGame(){
 }
 
 
-startGame()
+//startGame()
 
 function updateWord(response){    
     const res = response.split("|n");
@@ -72,11 +73,18 @@ const chars = ref(), displayChars = ref(), display = ref();
 const wrongLetters = ref([]), pressedLetters = ref([]);
 const gameStatus = ref("loading");
 
-//updateWord("putos |n hola")
+
+watch(gameStatus, (nuevo)=>{
+    if (nuevo === "won" || nuevo === "lost") {
+        setTimeout(() => {
+            router.push("/levels");
+        }, 10000);
+    }
+})
+updateWord("putos |n hola")
 
 function definirPalabra(){
     const cleanWord = quitarTildes(word.value);
-    console.log(cleanWord);
     chars.value = [...cleanWord.toLowerCase()];
     displayChars.value = [...word.value];
     display.value = Array(displayChars.value.length).fill("_");
@@ -147,12 +155,18 @@ console.log(wrongLetters.value);
         </div>
         <div v-show="gameStatus === 'won'" class="result-container">
             <h1 class="win-text">¡GANASTE!</h1>
+            <button class="return-btn" @click="$router.push('/levels')">
+                Volver a elegir nivel
+            </button>
         </div>
 
         <!-- PERDISTE -->
         <div v-show="gameStatus === 'lost'" class="result-container">
             <img src="./hangman8.png" class="lost-img" alt="Ahorcado completo">
             <h1 class="lose-text">PERDISTE</h1>
+            <button class="return-btn" @click="$router.push('/levels')">
+                Volver a elegir nivel
+            </button>
         </div>
     </div>
 </template>
@@ -267,5 +281,19 @@ console.log(wrongLetters.value);
     .lost-img {
         width: 350px;
         margin-bottom: 20px;
+    }
+
+    .return-btn {
+        margin-top: 20px;
+        padding: 12px 25px;
+        font-size: 20px;
+        border-radius: 10px;
+        background-color: #444;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+    .return-btn:hover {
+        background-color: #666;
     }
 </style>
