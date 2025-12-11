@@ -162,7 +162,7 @@ console.log(wrongLetters.value);
 
         <!-- PERDISTE -->
         <div v-show="gameStatus === 'lost'" class="result-container">
-            <img src="./hangman8.png" class="lost-img" alt="Ahorcado completo">
+            <img src="/hangman8.png" class="lost-img" alt="Ahorcado completo">
             <h1 class="lose-text">PERDISTE</h1>
             <button class="return-btn" @click="$router.push('/levels')">
                 Volver a elegir nivel
