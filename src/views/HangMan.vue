@@ -13,11 +13,33 @@ const route = useRoute();
 
 const {category, level} = route.params
 
-console.log(category, level)
+const avance = ref(0);
+const wrong = ref(0);
 
+switch(true){
+    case level === "facil":
+        wrong.value = 0;
+        avance.value = 1;
+        break;
+
+    case level === "medio":
+        wrong.value = 2;
+        avance.value = 1;
+        break;
+        
+    case level === "dificil":
+        wrong.value = 3;
+        avance.value = 1;
+        break;
+
+    case level === "hardcore":
+        wrong.value = 0;
+        avance.value = 4;
+        break;
+}
 
 function startGame(){        
-    fetch('https://2ngrw7kq-3005.use2.devtunnels.ms/api/product/generate',{
+    fetch('https://7mcmw0x3-3005.use.devtunnels.ms/api/product/generate',{
         method: "POST",
         headers:{
             "Content-Type":"application/json"
@@ -35,7 +57,6 @@ function startGame(){
         .catch(err => console.error("Error:", err))
 }
 
-startGame()
 
 function updateWord(response){    
     const res = response.split("|n");
@@ -45,7 +66,10 @@ function updateWord(response){
 }
 
 const chars = ref(), displayChars = ref(), display = ref();
-const wrongLetters = ref([]);
+const wrongLetters = ref([]), pressedLetters = ref([]);
+const gameStatus = ref("loading");
+
+updateWord("putos |n hola")
 
 function definirPalabra(){
     const cleanWord = quitarTildes(word.value);
@@ -53,6 +77,7 @@ function definirPalabra(){
     chars.value = [...cleanWord.toLowerCase()];
     displayChars.value = [...word.value];
     display.value = Array(displayChars.value.length).fill("_");
+    gameStatus.value = 'playing';
 }
 
 function quitarTildes(texto) {
@@ -61,14 +86,12 @@ function quitarTildes(texto) {
 
 function browseChar(letter){
 
+    if (pressedLetters.value.includes(letter)) return;
+
     let acierto = false;
 
     chars.value.forEach((char, index)=>{
-        console.log(char);
-        console.log(chars.value[index]);
-        console.log(displayChars.value[index]);
         if(char === letter){
-
             display.value[index] = displayChars.value[index];
             acierto = true;
         }
@@ -76,7 +99,22 @@ function browseChar(letter){
 
     if(!acierto && !wrongLetters.value.includes(letter)){
         wrongLetters.value.push(letter);
+        wrong.value = wrong.value + avance.value;
+        console.log(wrong.value);
     }
+
+    pressedLetters.value.push(letter);
+
+    if (!display.value.includes("_")) {
+        gameStatus.value = "won";
+        return;
+    }
+
+    if (wrong.value >= 8) {
+        gameStatus.value = "lost";
+        return;
+    }
+    
 }
 
 console.log(chars.value, display.value)
@@ -88,12 +126,20 @@ console.log(wrongLetters.value);
     <div class="hangman-main">
         
         <div class="hangman-content">
-            <img class="hangman-image" :src="'./hangman'+wrongLetters.length+'.png'" alt="">
+            <img class="hangman-image" :src="'./hangman'+wrong+'.png'" alt="">
             <div class="hangman-game">
                 <h1 v-for="(char, index) in display" :key="index">{{ char }}</h1>
             </div>
             <div class="hangman-keyboard">
-                <button v-for="(letter, i) in letters" :key="i" @click="browseChar(letter)">{{ letter }}</button>
+                <button 
+                    v-for="(letter, i) in letters" 
+                    :key="i" 
+                    @click="browseChar(letter)" 
+                    :disabled="pressedLetters.includes(letter) || gameStatus !== 'playing'" 
+                    :class="{pressed: pressedLetters.includes(letter) || gameStatus !== 'playing'}"
+                >
+                    {{ letter }}
+                </button>
             </div>
         </div>
     </div>
@@ -169,5 +215,18 @@ console.log(wrongLetters.value);
 
     .hangman-keyboard button:hover::before{
         opacity: 0.3;
+    }
+
+    .hangman-keyboard button.pressed{
+        background-color: #4b4b4b; /* más oscuro */
+        color: #cfcfcf;
+        cursor: not-allowed;
+        transform: scale(0.98);
+        box-shadow: none;
+    }
+
+    .hangman-keyboard button:disabled{
+        opacity: 0.8;
+        pointer-events: none;
     }
 </style>
