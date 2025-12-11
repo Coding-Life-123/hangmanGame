@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue';
 import { useRoute } from 'vue-router';
+import Loading from '../components/Loading.vue';
 
 const word = ref("");
 
@@ -58,6 +59,8 @@ function startGame(){
 }
 
 
+//startGame()
+
 function updateWord(response){    
     const res = response.split("|n");
     console.log(res[0].trim())
@@ -69,7 +72,7 @@ const chars = ref(), displayChars = ref(), display = ref();
 const wrongLetters = ref([]), pressedLetters = ref([]);
 const gameStatus = ref("loading");
 
-updateWord("putos |n hola")
+//updateWord("putos |n hola")
 
 function definirPalabra(){
     const cleanWord = quitarTildes(word.value);
@@ -123,9 +126,9 @@ console.log(wrongLetters.value);
 </script>
 
 <template>
-    <div class="hangman-main">
-        
-        <div class="hangman-content">
+    <div class="hangman-main">        
+        <Loading v-show="gameStatus==='loading'"/>
+        <div v-show="gameStatus === 'playing'" class="hangman-content">
             <img class="hangman-image" :src="'./hangman'+wrong+'.png'" alt="">
             <div class="hangman-game">
                 <h1 v-for="(char, index) in display" :key="index">{{ char }}</h1>
@@ -141,6 +144,15 @@ console.log(wrongLetters.value);
                     {{ letter }}
                 </button>
             </div>
+        </div>
+        <div v-show="gameStatus === 'won'" class="result-container">
+            <h1 class="win-text">¡GANASTE!</h1>
+        </div>
+
+        <!-- PERDISTE -->
+        <div v-show="gameStatus === 'lost'" class="result-container">
+            <img src="./hangman8.png" class="lost-img" alt="Ahorcado completo">
+            <h1 class="lose-text">PERDISTE</h1>
         </div>
     </div>
 </template>
@@ -228,5 +240,32 @@ console.log(wrongLetters.value);
     .hangman-keyboard button:disabled{
         opacity: 0.8;
         pointer-events: none;
+    }
+
+    .result-container {
+        width: 100vw;
+        height: 100vh;
+        color: white;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .win-text {
+        font-size: 60px;
+        font-weight: bold;
+        color: #7CFC00; /* verde brillante */
+    }
+
+    .lose-text {
+        font-size: 60px;
+        font-weight: bold;
+        color: #ff4c4c; /* rojo */
+    }
+
+    .lost-img {
+        width: 350px;
+        margin-bottom: 20px;
     }
 </style>
