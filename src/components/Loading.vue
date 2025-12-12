@@ -36,12 +36,11 @@
     }
 
     .spinner {
-        border: 6px solid #violet;
-        border-top: 6px solid white;
+        border: 6px  #fff;
+        border-bottom: 6px  violet;
         border-radius: 50% 50%;
         width: 70px;
         height: 70px;
-        animation: spin 0.9s linear infinite;
         margin-bottom: 20px;
     }
 

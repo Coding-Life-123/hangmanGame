@@ -60,7 +60,7 @@ function startGame(){
 }
 
 
-startGame()
+//startGame()
 
 function updateWord(response){    
     const res = response.split("|n");

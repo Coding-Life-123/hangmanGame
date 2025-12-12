@@ -36,7 +36,7 @@ function cambiarCat(newCat){
     <div class="categories-main">
         <h1 class="categories-title">CATEGORÍAS:</h1>
         <div class="categories-list">
-            <router-link :to="{name:'hangman-game', params:{category: categoryVar, level}}" v-for="(category, index) in categories"><CategoryDiv  :icon="category.icon" :title="category.type" :bgColor="category.color" :key="index" @click="cambiarCat(category.type)"/></router-link>
+            <router-link :to="{name:'hangman-game', params:{category: categoryVar, level}}" v-for="(category, index) in categories" :key="index"><CategoryDiv  :icon="category.icon" :title="category.type" :bgColor="category.color" @click="cambiarCat(category.type)"/></router-link>
         </div>
 
     </div>
