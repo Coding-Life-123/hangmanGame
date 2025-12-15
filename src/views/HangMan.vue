@@ -1,22 +1,37 @@
 <script setup>
-import { ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import Loading from '../components/Loading.vue';
 
 const word = ref("");
+const hint = ref("");
 
+//variable para teclado
 const letters = [
   "a","b","c","d","e","f","g","h","i","j","k","l","m",
   "n","ñ","o","p","q","r","s","t","u","v","w","x","y","z","-"
 ];
 
+//lógica rutas
 const route = useRoute();
 const router = useRouter();
 
+//entrada por url
 const {category, level} = route.params
 
+//definición avance imagenes, errores y vidas
 const avance = ref(0);
 const wrong = ref(0);
+const MAX_LIVES = 8;
+const livesLeft = computed(() => MAX_LIVES - wrong.value);
+
+//variables tiempo 
+const MAX_TIME = 60;
+const timeLeft = ref(MAX_TIME);
+const timer = ref(null);
+
+//variable puntaje
+const scoreSent = ref(false);
 
 switch(true){
     case level === "facil":
@@ -40,8 +55,10 @@ switch(true){
         break;
 }
 
+const SERVER = import.meta.env.VITE_SERVER;
+
 function startGame(){        
-    fetch('https://7mcmw0x3-3005.use.devtunnels.ms/api/product/generate',{
+    fetch(`${SERVER}/api/product/generate`,{
         method: "POST",
         headers:{
             "Content-Type":"application/json"
@@ -60,13 +77,14 @@ function startGame(){
 }
 
 
-//startGame()
+startGame()
 
 function updateWord(response){    
     const res = response.split("|n");
-    console.log(res[0].trim())
-    word.value = res[0].trim()
-    definirPalabra()
+    console.log(res[0].trim());
+    word.value = res[0].trim();
+    hint.value = res[1]?.trim() || "";
+    definirPalabra();
 }
 
 const chars = ref(), displayChars = ref(), display = ref();
@@ -76,6 +94,7 @@ const gameStatus = ref("loading");
 
 watch(gameStatus, (nuevo)=>{
     if (nuevo === "won" || nuevo === "lost") {
+        stopTimer();
         setTimeout(() => {
             router.push("/levels");
         }, 10000);
@@ -88,6 +107,9 @@ function definirPalabra(){
     chars.value = [...cleanWord.toLowerCase()];
     displayChars.value = [...word.value];
     display.value = Array(displayChars.value.length).fill("_");
+
+    timeLeft.value = MAX_TIME;
+    startTimer();
     gameStatus.value = 'playing';
 }
 
@@ -117,16 +139,104 @@ function browseChar(letter){
     pressedLetters.value.push(letter);
 
     if (!display.value.includes("_")) {
+        stopTimer();
         gameStatus.value = "won";
+        console.log("victoria!");
+        sendScore("won");
         return;
     }
 
     if (wrong.value >= 8) {
+        stopTimer();
         gameStatus.value = "lost";
+        console.log("derrota");
+        sendScore("lost");
         return;
     }
     
 }
+
+//configuración temporizador y lógica puntajes
+
+function startTimer() {
+    timer.value = setInterval(() => {
+        if (timeLeft.value > 0) {
+            timeLeft.value--;
+        } else {
+            clearInterval(timer.value);
+            gameStatus.value = "lost";
+        }
+    }, 1000);
+}
+
+function stopTimer() {
+    if (timer.value) {
+        clearInterval(timer.value);
+        timer.value = null;
+    }
+}
+
+//cálculo del puntaje
+function calculateScore(result) {
+
+    const DIFFICULTY_MULTIPLIER = {
+        facil: 1,
+        medio: 1.5,
+        dificil: 2,
+        hardcore: 3
+    };
+
+    if (result === "lost") {
+        return Math.floor(10 * DIFFICULTY_MULTIPLIER[level]);
+    }
+
+    const baseScore = 100;
+    const timeUsed = MAX_TIME - timeLeft.value;
+    const timeScore = Math.max(0, (MAX_TIME - timeUsed) * 2);
+    const errorPenalty = wrongLetters.value.length * 5;
+
+    const score = (
+        baseScore +
+        timeScore -
+        errorPenalty
+    ) * DIFFICULTY_MULTIPLIER[level];
+
+    return Math.max(0, Math.floor(score));
+}
+
+//envío del puntaje
+async function sendScore(result) {
+    if (scoreSent.value) return;
+
+    const account = JSON.parse(localStorage.getItem("username"));
+    if (!account) return;
+
+    const score = calculateScore(result);
+    console.log("enviando valores")
+
+    fetch(`${SERVER}/api/scores/`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            user_id: localStorage.getItem("userId"),
+            username:account,
+            difficulty: level,
+            category,
+            score,
+            errors:wrongLetters.value.length,
+            timeSeconds:MAX_TIME-timeLeft.value,
+            gameResult:result
+        })
+    }).then(() => {
+        scoreSent.value = true;
+    }).catch(err => {
+        console.error("Error enviando score:", err);
+    });
+}
+
+
 
 console.log(chars.value, display.value)
 console.log(wrongLetters.value);
@@ -137,7 +247,23 @@ console.log(wrongLetters.value);
     <div class="hangman-main">        
         <Loading v-show="gameStatus==='loading'"/>
         <div v-show="gameStatus === 'playing'" class="hangman-content">
-            <img class="hangman-image" :src="'./hangman'+wrong+'.png'" alt="">
+            <div class="hangman-top-container">
+                <div class="lives-container" style="text-align: left; margin: 20px 0 0 20px;">
+                    <span 
+                        v-for="i in MAX_LIVES" 
+                        :key="i"
+                        class="life"
+                        :class="{ lost: i > livesLeft }"                        
+                    >
+                        ❤
+                    </span>
+                </div>
+                <h3 style="text-align:right; margin: 20px 20px 0 0;">Tiempo: {{ timeLeft }}s</h3>
+            </div>
+            <img class="hangman-image" :src="'./hangman'+wrong+'.png'" :alt="'hangman'+wrong">
+            <p v-if="hint" class="hint-text">
+                Pista: {{ hint }}
+            </p>
             <div class="hangman-game">
                 <h1 v-for="(char, index) in display" :key="index">{{ char }}</h1>
             </div>
@@ -188,14 +314,42 @@ console.log(wrongLetters.value);
         margin: auto;
         display: flex;
         flex-direction: column;
-        gap: 30px;
+        gap: 20px;
+    }
+
+    .hangman-top-container{
+        display: flex;
+        justify-content: space-between;
+        font-size: 22px;
+    }
+
+    .lives-container {
+        text-align: left;        
+    }
+
+    .life {
+        margin: 0 2px;
+        color: #ff4c4c;
+        transition: opacity 0.3s, filter 0.3s;
+    }
+
+    .life.lost {
+        opacity: 0.25;
+        filter: grayscale(1);
     }
 
     .hangman-image{
         width: 300px;
-        margin: auto auto 0 auto;
+        margin: 0 auto 0 auto;
     }
 
+    .hint-text {
+        margin-top: 10px;
+        text-align: center;
+        font-size: 18px;
+        color: #b9b9b9;
+        font-style: italic;
+    }
     .hangman-game{
         display: flex;
         margin: 0 auto;

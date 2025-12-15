@@ -36,15 +36,22 @@
     }
 
     .spinner {
-        border: 6px  #fff;
-        border-bottom: 6px  violet;
+        border: 6px solid #white;
+        border-top: 6px solid rgb(247, 36, 247);
         border-radius: 50% 50%;
         width: 70px;
         height: 70px;
         margin-bottom: 20px;
+        animation: spin 0.8s linear infinite;
+    }
+
+    p{
+        color: rgb(247, 36, 247);
+        text-shadow: white 0px 0px 20px;
     }
 
     @keyframes spin {
+        from { transform: rotate(0deg); }
         to { transform: rotate(360deg); }
     }
 
