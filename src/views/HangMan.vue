@@ -55,7 +55,7 @@ switch(true){
         break;
 }
 
-const SERVER = import.meta.env.VITE_SERVER;
+const SERVER = 'https://7mcmw0x3-3005.use.devtunnels.ms';
 
 function startGame(){        
     fetch(`${SERVER}/api/product/generate`,{

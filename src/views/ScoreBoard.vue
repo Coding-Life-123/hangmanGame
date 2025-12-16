@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 
-const SERVER = import.meta.env.VITE_SERVER;
+const SERVER = 'https://7mcmw0x3-3005.use.devtunnels.ms';
 
 const scores = ref([]);
 const loading = ref(false);
